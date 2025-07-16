@@ -15,25 +15,37 @@
       background:#ff69b4; color:#fff;
       padding:2rem 1rem; text-align:center;
     }
-    .menu-btn {
+    .menu-btn, .close-btn {
       position:absolute;
       top:15px; left:15px;
       width:30px; height:30px;
       cursor:pointer;
+      z-index:1001;
     }
     .menu-btn div {
       width:100%; height:4px;
       background:#fff; margin:5px 0;
       transition:0.3s;
     }
+    .close-btn {
+      display:none;
+      font-size:24px;
+      background:none;
+      border:none;
+      color:white;
+    }
+
     nav {
       position:fixed;
-      top:0; left:-200px;
+      top:0; left:-220px;
       width:200px; height:100%;
       background:#ff3399; color:#fff;
       padding-top:80px;
-      transition:0.3s;
+      transition:left 0.3s;
       z-index:1000;
+    }
+    nav.open {
+      left:0;
     }
     nav a {
       display:block;
@@ -113,9 +125,11 @@
 <body>
 
   <header>
-    <div class="menu-btn" onclick="toggleNav()">
+    <div class="menu-btn" id="openMenu" onclick="toggleNav(true)">
       <div></div><div></div><div></div>
     </div>
+    <button class="close-btn" id="closeMenu" onclick="toggleNav(false)">✕</button>
+
     <h1>peluditos_spa 🐾</h1>
     <blockquote>
       “¡Donde el amor, el respeto y el cuidado por tu peludo es nuestra prioridad!❤️🐶<br>
@@ -157,7 +171,7 @@
       </div>
     </section>
 
-    <a id="contacto" href="https://wa.me/56940304426?text=Hola,%20quiero%20reservar%20una%20hora%20para%20mi%20mascota" class="btn-whatsapp" target="_blank">
+    <a id="contacto" href="https://wa.me/56956107671?text=Hola,%20quiero%20reservar%20una%20hora%20para%20mi%20mascota" class="btn-whatsapp" target="_blank">
       🐶 Quiero reservar mi hora
     </a>
 
@@ -170,9 +184,19 @@
   <footer>© 2025 peluditos_spa - Todos los derechos reservados</footer>
 
   <script>
-    function toggleNav(){
+    function toggleNav(open) {
       const nav = document.getElementById('navMenu');
-      nav.style.left = nav.style.left === '0px' ? '-200px' : '0px';
+      const openBtn = document.getElementById('openMenu');
+      const closeBtn = document.getElementById('closeMenu');
+      if(open){
+        nav.classList.add('open');
+        openBtn.style.display = 'none';
+        closeBtn.style.display = 'block';
+      } else {
+        nav.classList.remove('open');
+        openBtn.style.display = 'block';
+        closeBtn.style.display = 'none';
+      }
     }
   </script>
 
