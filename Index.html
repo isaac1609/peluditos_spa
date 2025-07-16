@@ -6,20 +6,24 @@
   <title>peluditos_spa</title>
   <style>
     body {
-      margin: 0; padding: 0;
+      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #fffafc; color: #333;
+      background: #fffafc;
+      color: #333;
+    }
+
+    audio {
+      display: none;
     }
 
     .inauguracion {
-      background-color: #ffe0f0;
+      background: linear-gradient(90deg, #ff69b4, #ffd6e8, #ff69b4);
       color: #c70082;
       text-align: center;
       padding: 1rem;
       font-weight: bold;
-      font-size: 1.1rem;
-      border-bottom: 2px solid #ff69b4;
-      animation: parpadeo 2s infinite ease-in-out;
+      font-size: 1.2rem;
+      animation: parpadeo 1s infinite;
     }
 
     @keyframes parpadeo {
@@ -37,15 +41,17 @@
 
     .menu-btn, .close-btn {
       position: absolute;
-      top: 15px; left: 15px;
+      top: 15px;
+      left: 15px;
       cursor: pointer;
       z-index: 1001;
     }
 
     .menu-btn div {
-      width: 30px; height: 4px;
-      background: #fff; margin: 5px 0;
-      transition: 0.3s;
+      width: 30px;
+      height: 4px;
+      background: #fff;
+      margin: 5px 0;
     }
 
     .close-btn {
@@ -58,8 +64,10 @@
 
     nav {
       position: fixed;
-      top: 0; left: -220px;
-      width: 200px; height: 100%;
+      top: 0;
+      left: -220px;
+      width: 200px;
+      height: 100%;
       background: #ff3399;
       color: #fff;
       padding-top: 80px;
@@ -102,7 +110,6 @@
     h2 {
       color: #ff3399;
       text-align: center;
-      margin-top: 0;
     }
 
     ul {
@@ -186,12 +193,19 @@
 </head>
 <body>
 
+  <!-- 🎵 Música de fondo -->
+  <audio autoplay loop>
+    <source src="https://raw.githubusercontent.com/isaac1609/peluditos_spa/2a61c4d24f954b841f2453b694af41f197315fe4/Nio%20Garcia%20x%20Brray%20x%20Juanka%20x%20Anuel%20AA%20x%20Myke%20Towers%20-%20La%20Jeepeta%20Remix%20(Video%20Oficial)(MP3_160K).mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- 🎉 Inauguración -->
   <div class="inauguracion" id="inauguracion">
     🎉 ¡Gran inauguración el 6 de agosto del 2025!<br>
     📅 Solo 3 cupos por día · 💥 Grandes promociones<br>
-    ⏳ Faltan <span id="contador"></span> días
+    ⏳ Faltan <span id="contador"></span>
   </div>
 
+  <!-- Encabezado -->
   <header>
     <div class="menu-btn" id="openMenu" onclick="toggleNav(true)">
       <div></div><div></div><div></div>
@@ -205,6 +219,7 @@
     </blockquote>
   </header>
 
+  <!-- Menú -->
   <nav id="navMenu">
     <a href="#inicio" onclick="mostrarSeccion('inicio')">Inicio</a>
     <a href="#precios" onclick="mostrarSeccion('precios')">Precios</a>
@@ -220,13 +235,13 @@
     </section>
 
     <section id="precios" class="seccion">
-      <h2>Precios de inaguracion</h2>
+      <h2>Precios de inauguración</h2>
       <ul>
-        <li>Corte + baño basico: $10.000</li>
+        <li>Corte + baño básico: $10.000</li>
         <li>Baño y secado: $8.000</li>
         <li>Corte + baño completo: $15.000</li>
         <li>Deslanado: $5.000</li>
-        <li>accesorios gratis por el mes de la inaguracion</li></li>
+        <li>Accesorios gratis por el mes de la inauguración</li>
       </ul>
     </section>
 
@@ -241,7 +256,7 @@
     <section id="clientes" class="seccion">
       <h2>Fotos de clientes felices</h2>
       <div class="gallery-scroll">
-        <!-- Aquí puedes agregar más imágenes -->
+        <!-- Puedes agregar más imágenes desde GitHub -->
       </div>
     </section>
 
@@ -288,13 +303,24 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Contador regresivo a la fecha de inauguración
+    // ⏳ Contador en días, horas, minutos y segundos
     const fechaInauguracion = new Date("2025-08-06T00:00:00").getTime();
     const contador = document.getElementById("contador");
     setInterval(() => {
-      const hoy = new Date().getTime();
-      const faltan = Math.ceil((fechaInauguracion - hoy) / (1000 * 60 * 60 * 24));
-      contador.textContent = faltan >= 0 ? faltan : 0;
+      const ahora = new Date().getTime();
+      const diferencia = fechaInauguracion - ahora;
+
+      if (diferencia <= 0) {
+        contador.textContent = "¡Ya comenzó!";
+        return;
+      }
+
+      const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+      contador.textContent = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
     }, 1000);
   </script>
 
