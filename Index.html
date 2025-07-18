@@ -189,7 +189,7 @@
   <div class="inauguracion" id="inauguracion">
     🎉 ¡Gran inauguración el 6 de agosto del 2025!<br>
     📅 Solo 3 cupos por día · 💥 Grandes promociones<br>
-    ⏳ Faltan <span id="contador"></span> días
+    ⏳ Faltan <span id="contador"></span>
   </div>
 
   <header>
@@ -311,13 +311,24 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Contador regresivo a la fecha de inauguración
+    // Contador con días, horas, minutos y segundos
     const fechaInauguracion = new Date("2025-08-06T00:00:00").getTime();
     const contador = document.getElementById("contador");
     setInterval(() => {
-      const hoy = new Date().getTime();
-      const faltan = Math.ceil((fechaInauguracion - hoy) / (1000 * 60 * 60 * 24));
-      contador.textContent = faltan >= 0 ? faltan : 0;
+      const ahora = new Date().getTime();
+      const diferencia = fechaInauguracion - ahora;
+
+      if (diferencia <= 0) {
+        contador.textContent = "¡Ya comenzó!";
+        return;
+      }
+
+      const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+      const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+
+      contador.textContent = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
     }, 1000);
   </script>
 
