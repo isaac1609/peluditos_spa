@@ -212,6 +212,7 @@
     <a href="#clientes" onclick="mostrarSeccion('clientes')">Clientes felices</a>
     <a href="#contacto" onclick="mostrarSeccion('contacto')">Contacto</a>
     <a href="#requisitos" onclick="mostrarSeccion('requisitos')">Requisitos para el baño</a>
+    <a href="#promociones" onclick="mostrarSeccion('promociones')">Promociones</a>
   </nav>
 
   <main>
@@ -219,6 +220,21 @@
       <h2>Bienvenido a peluditos_spa</h2>
       <p style="text-align:center">En peluditos_spa brindamos un servicio de peluquería canina con amor, respeto y dedicación. Tu mascota merece lo mejor, y eso es lo que entregamos siempre.</p>
     </section>
+    <section id="promociones" class="seccion promocion-destacada">
+  <h2>🎉 Promociones Especiales por Inauguración 🎉</h2>
+  <p style="text-align:center;">Aprovecha nuestras ofertas por apertura: solo por tiempo limitado</p>
+  <div class="promo-gallery">
+    <a href="https://raw.githubusercontent.com/isaac1609/peluditos_spa/main/IMG_0961.png" target="_blank">
+      <img src="https://raw.githubusercontent.com/isaac1609/peluditos_spa/main/IMG_0961.png" alt="Promo 1">
+    </a>
+    <!-- Puedes agregar más imágenes así -->
+    <!--
+    <a href="URL_IMAGEN_GRANDE" target="_blank">
+      <img src="URL_IMAGEN" alt="Otra promo">
+    </a>
+    -->
+  </div>
+</section>
 
     <section id="precios" class="seccion">
       <h2>Precios de inauguración</h2>
@@ -331,6 +347,39 @@
 
       contador.textContent = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
     }, 1000);
+    }
+    .promocion-destacada {
+  background: #fff0f5;
+  border-top: 4px dashed #ff69b4;
+  border-bottom: 4px dashed #ff69b4;
+  padding: 2rem 1rem;
+  margin: 2rem 0;
+  animation: brillo 2s infinite ease-in-out;
+}
+
+@keyframes brillo {
+  0%, 100% { background-color: #fff0f5; }
+  50% { background-color: #ffe4ed; }
+}
+
+.promo-gallery {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 1rem;
+}
+
+.promo-gallery img {
+  max-width: 300px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(255,105,180,0.4);
+  transition: transform 0.3s ease;
+}
+
+.promo-gallery img:hover {
+  transform: scale(1.05);
+}
   </script>
 
 </body>
