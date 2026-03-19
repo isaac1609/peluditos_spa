@@ -65,8 +65,9 @@
       color: #1e40af;
     }
 
+    /* Estilos para Bottom Navigation y FAB */
     body {
-      padding-bottom: 80px;
+      padding-bottom: 80px !important;
     }
     .bottom-nav {
       position: fixed;
@@ -78,8 +79,8 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-      z-index: 50;
+      box-shadow: 0 -2px 15px rgba(0,0,0,0.1);
+      z-index: 1000;
       border-top: 1px solid #fce4ec;
     }
     .nav-item {
@@ -88,25 +89,26 @@
       align-items: center;
       justify-content: center;
       color: #9ca3af;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
       text-decoration: none;
       flex: 1;
+      transition: all 0.3s ease;
     }
     .nav-item.active {
       color: #ec4899;
     }
     .nav-item svg {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       margin-bottom: 2px;
     }
     .fab-container {
       position: fixed;
-      bottom: 35px;
+      bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 60;
+      z-index: 1001;
     }
     .fab {
       width: 65px;
@@ -117,8 +119,16 @@
       align-items: center;
       justify-content: center;
       color: white;
-      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+      box-shadow: 0 4px 20px rgba(236, 72, 153, 0.4);
       border: 5px solid white;
+      transition: transform 0.2s ease;
+    }
+    .fab:active {
+      transform: scale(0.9);
+    }
+    .fab svg {
+      width: 32px;
+      height: 32px;
     }
   </style>
 </head>
@@ -1656,52 +1666,52 @@ function renderHistorialFiltrado(citasFiltradas) {
 }
 
 
-    // Lógica de navegación Bottom Nav
-    const sections = {
+    // --- Lógica de Navegación Bottom Nav (Agregada) ---
+    const navSections = {
       agenda: document.getElementById('horasProgramadasSection'),
       historial: document.getElementById('historialSection'),
       calendario: document.getElementById('calendarioSection')
     };
     
-    const navItems = {
+    const navButtons = {
       agenda: document.getElementById('navAgenda'),
       historial: document.getElementById('navHistorial'),
       calendario: document.getElementById('navCalendario')
     };
 
-    function setActiveSection(sectionName) {
-      Object.values(sections).forEach(s => s.classList.add('hidden'));
-      Object.values(navItems).forEach(n => n.classList.remove('active'));
+    function switchSection(name) {
+      // Ocultar todas
+      Object.values(navSections).forEach(s => s.classList.add('hidden'));
+      Object.values(navButtons).forEach(b => b.classList.remove('active'));
       
-      sections[sectionName].classList.remove('hidden');
-      navItems[sectionName].classList.add('active');
+      // Mostrar seleccionada
+      navSections[name].classList.remove('hidden');
+      navButtons[name].classList.add('active');
       
-      if(sectionName === 'agenda') {
-        renderCitas(filtroFecha.value);
-      } else if(sectionName === 'calendario') {
-        renderCalendario();
-      }
+      // Acciones específicas
+      if(name === 'agenda') renderCitas(filtroFecha.value);
+      if(name === 'calendario') renderCalendario();
     }
 
-    navItems.agenda.addEventListener('click', (e) => { e.preventDefault(); setActiveSection('agenda'); });
-    navItems.historial.addEventListener('click', (e) => { e.preventDefault(); setActiveSection('historial'); });
-    navItems.calendario.addEventListener('click', (e) => { e.preventDefault(); setActiveSection('calendario'); });
+    navButtons.agenda.addEventListener('click', (e) => { e.preventDefault(); switchSection('agenda'); });
+    navButtons.historial.addEventListener('click', (e) => { e.preventDefault(); switchSection('historial'); });
+    navButtons.calendario.addEventListener('click', (e) => { e.preventDefault(); switchSection('calendario'); });
     
     document.getElementById('fabAgendar').addEventListener('click', () => {
       agendarModal.classList.remove('hidden');
     });
 
-    // Mostrar agenda por defecto al cargar
+    // Iniciar en la sección de Agenda
     window.addEventListener('DOMContentLoaded', () => {
-      setActiveSection('agenda');
+      switchSection('agenda');
     });
   </script>
 
 
-  <!-- Bottom Navigation -->
+  <!-- Bottom Navigation Bar -->
   <nav class="bottom-nav">
     <a href="#" class="nav-item active" id="navAgenda">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
       <span>Agenda</span>
     </a>
     <a href="#" class="nav-item" id="navHistorial">
@@ -1719,9 +1729,9 @@ function renderHistorialFiltrado(citasFiltradas) {
     </a>
   </nav>
 
-  <!-- FAB -->
+  <!-- Floating Action Button (FAB) -->
   <div class="fab-container">
-    <button class="fab" id="fabAgendar">
+    <button class="fab" id="fabAgendar" title="Agendar Cita">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
     </button>
   </div>
