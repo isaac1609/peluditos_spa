@@ -64,72 +64,6 @@
       background: #dbeafe;
       color: #1e40af;
     }
-
-    /* Estilos para Bottom Navigation y FAB */
-    body {
-      padding-bottom: 80px !important;
-    }
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 70px;
-      background: white;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      box-shadow: 0 -2px 15px rgba(0,0,0,0.1);
-      z-index: 1000;
-      border-top: 1px solid #fce4ec;
-    }
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #9ca3af;
-      font-size: 11px;
-      font-weight: 600;
-      text-decoration: none;
-      flex: 1;
-      transition: all 0.3s ease;
-    }
-    .nav-item.active {
-      color: #ec4899;
-    }
-    .nav-item svg {
-      width: 26px;
-      height: 26px;
-      margin-bottom: 2px;
-    }
-    .fab-container {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1001;
-    }
-    .fab {
-      width: 65px;
-      height: 65px;
-      background: linear-gradient(135deg, #ec4899 0%, #f06292 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      box-shadow: 0 4px 20px rgba(236, 72, 153, 0.4);
-      border: 5px solid white;
-      transition: transform 0.2s ease;
-    }
-    .fab:active {
-      transform: scale(0.9);
-    }
-    .fab svg {
-      width: 32px;
-      height: 32px;
-    }
   </style>
 </head>
 
@@ -140,10 +74,39 @@
       <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Logo Peluditos Spa" class="h-12 w-12 rounded-full shadow-md"/>
       <h1 class="text-2xl md:text-3xl font-bold text-gray-800 bg-gradient-to-r from-pink-500 to-pink-600 bg-clip-text text-transparent">Agenda Interna - Peluditos Spa</h1>
     </div>
-    
+    <button id="menuToggle" class="text-pink-600 hover:text-pink-800 transition-colors" aria-label="Abrir menú">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
   </header>
 
-  
+  <nav id="menuDropdown" class="hidden absolute top-24 right-6 bg-white border border-pink-200 rounded-lg shadow-xl w-56 z-30 fade-in">
+    <button id="toggleAgendarBtn" class="w-full px-4 py-3 text-left text-gray-700 hover:bg-pink-50 hover:text-pink-700 transition-colors rounded-t-lg flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Agendar Hora
+    </button>
+    <button id="toggleHorasProgramadas" class="w-full px-4 py-3 text-left text-gray-700 hover:bg-pink-50 hover:text-pink-700 transition-colors flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+      </svg>
+      Horas Programadas
+    </button>
+    <button id="toggleHistorialBtn" class="w-full px-4 py-3 text-left text-gray-700 hover:bg-pink-50 hover:text-pink-700 transition-colors flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      Historial de la Mascota
+    </button>
+    <button id="toggleCalendarioBtn" class="w-full px-4 py-3 text-left text-gray-700 hover:bg-pink-50 hover:text-pink-700 transition-colors rounded-b-lg flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      Calendario
+    </button>
+  </nav>
 
   <main class="w-full max-w-5xl flex flex-col gap-8">
 
@@ -1665,71 +1628,7 @@ function renderHistorialFiltrado(citasFiltradas) {
   historialContent.innerHTML = html;
 }
 
-
-    // --- Lógica de Navegación Bottom Nav ---
-    const navSections = {
-      agenda: document.getElementById('horasProgramadasSection'),
-      historial: document.getElementById('historialSection'),
-      calendario: document.getElementById('calendarioSection')
-    };
-    
-    const navButtons = {
-      agenda: document.getElementById('navAgenda'),
-      historial: document.getElementById('navHistorial'),
-      calendario: document.getElementById('navCalendario')
-    };
-
-    function switchSection(name) {
-      Object.values(navSections).forEach(s => s.classList.add('hidden'));
-      Object.values(navButtons).forEach(b => b.classList.remove('active'));
-      
-      navSections[name].classList.remove('hidden');
-      navButtons[name].classList.add('active');
-      
-      if(name === 'agenda') renderCitas(filtroFecha.value);
-      if(name === 'calendario') renderCalendario();
-    }
-
-    navButtons.agenda.addEventListener('click', (e) => { e.preventDefault(); switchSection('agenda'); });
-    navButtons.historial.addEventListener('click', (e) => { e.preventDefault(); switchSection('historial'); });
-    navButtons.calendario.addEventListener('click', (e) => { e.preventDefault(); switchSection('calendario'); });
-    
-    document.getElementById('fabAgendar').addEventListener('click', () => {
-      agendarModal.classList.remove('hidden');
-    });
-
-    window.addEventListener('DOMContentLoaded', () => {
-      switchSection('agenda');
-    });
   </script>
 
-
-  <!-- Bottom Navigation Bar -->
-  <nav class="bottom-nav">
-    <a href="#" class="nav-item active" id="navAgenda">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-      <span>Agenda</span>
-    </a>
-    <a href="#" class="nav-item" id="navHistorial">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-      <span>Historial</span>
-    </a>
-    <div class="w-20"></div> <!-- Espacio para el FAB -->
-    <a href="#" class="nav-item" id="navCalendario">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-      <span>Calendario</span>
-    </a>
-    <a href="#" class="nav-item" onclick="location.reload()">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-      <span>Recargar</span>
-    </a>
-  </nav>
-
-  <!-- Floating Action Button (FAB) -->
-  <div class="fab-container">
-    <button class="fab" id="fabAgendar" title="Agendar Cita">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-    </button>
-  </div>
 </body>
 </html>
