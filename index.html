@@ -1,226 +1,1634 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>peluditos_spa</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Agenda Interna - Peluditos Spa</title>
+  <meta name="theme-color" content="#f48fb1"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #fefefe;
-      color: #333;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #fff9f9 0%, #fce4ec 100%);
+      min-height: 100vh;
     }
-    header {
-      background-color: #ff69b4;
-      color: white;
-      padding: 2rem 1rem;
-      text-align: center;
+    .calendar-scroll::-webkit-scrollbar {
+      height: 8px;
     }
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-      text-transform: lowercase;
+    .calendar-scroll::-webkit-scrollbar-thumb {
+      background: #ec4899;
+      border-radius: 4px;
     }
-    blockquote {
-      font-style: italic;
-      border-left: 4px solid white;
-      margin: 1rem auto;
-      padding: 1rem;
-      max-width: 700px;
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
     }
-    main {
-      max-width: 1000px;
-      margin: 2rem auto;
-      padding: 0 1rem;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    section {
-      margin-bottom: 2rem;
+    .btn-primary {
+      background: linear-gradient(135deg, #ec4899 0%, #f06292 100%);
+      transition: all 0.3s ease;
     }
-    h2 {
-      color: #ff3399;
-      text-align: center;
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
     }
-    ul {
-      list-style: none;
-      padding: 0;
-      max-width: 500px;
-      margin: auto;
-    }
-    ul li {
-      background: #ffe4f1;
-      margin: 10px 0;
-      padding: 10px;
-      border-radius: 8px;
-    }
-    .gallery {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-    }
-    .gallery img {
-      width: 180px;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(255, 105, 180, 0.3);
-    }
-    .btn-whatsapp {
-      display: block;
-      background-color: #25d366;
-      color: white;
-      text-align: center;
-      margin: 2rem auto;
-      padding: 1rem;
-      width: 260px;
-      font-weight: bold;
-      font-size: 1.2rem;
-      border-radius: 30px;
-      text-decoration: none;
-    }
-    .reviews-section textarea {
-      width: 100%;
-      height: 80px;
-      border-radius: 8px;
-      padding: 10px;
-      border: 1px solid #ccc;
-    }
-    .reviews-section button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #ff3399;
-      color: white;
-      border: none;
-      border-radius: 30px;
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
       cursor: pointer;
+      transition: all 0.2s;
     }
-    .review-item {
-      background: #fff0f6;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 10px;
-      font-style: italic;
+    .badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
-    .social-links {
-      text-align: center;
-      margin-top: 2rem;
+    .badge-pendiente {
+      background: #fef3c7;
+      color: #92400e;
     }
-    .social-links a {
-      margin: 0 15px;
-      padding: 10px 20px;
-      border-radius: 50px;
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
+    .badge-realizado {
+      background: #d1fae5;
+      color: #065f46;
     }
-    .instagram { background-color: #e1306c; }
-    .facebook { background-color: #3b5998; }
-    footer {
-      text-align: center;
-      padding: 1rem;
-      color: #888;
-      font-size: 0.9rem;
+    .badge-cancelado {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .badge-en-proceso {
+      background: #dbeafe;
+      color: #1e40af;
     }
   </style>
 </head>
-<body>
 
-  <header>
-    <h1>peluditos_spa 🐾</h1>
-    <blockquote>
-      “¡Donde el amor, el respeto y el cuidado por tu peludo es nuestra prioridad!❤️🐶<br />
-      <strong>𝙉𝙊 𝙎𝙀𝘿𝘼𝙈𝙊𝙎 𝘼𝙉𝙄𝙈𝘼𝙇𝙀𝙎</strong>”
-    </blockquote>
+<body class="min-h-screen px-4 py-6 flex flex-col items-center">
+
+  <header class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-4 mb-8 flex justify-between items-center">
+    <div class="flex items-center gap-4">
+      <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Logo Peluditos Spa" class="h-12 w-12 rounded-full shadow-md"/>
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-800 bg-gradient-to-r from-pink-500 to-pink-600 bg-clip-text text-transparent">Agenda Interna - Peluditos Spa</h1>
+    </div>
+    <button id="menuToggle" class="text-pink-600 hover:text-pink-800 transition-colors" aria-label="Abrir menú">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
   </header>
 
-  <main>
-    <section>
-      <h2>Precios</h2>
-      <ul>
-        <li>Corte básico: $15.000</li>
-        <li>Baño y secado: $12.000</li>
-        <li>Corte + baño completo: $25.000</li>
-        <li>Deslanado: $8.000</li>
-      </ul>
+  <nav id="menuDropdown" class="hidden absolute top-24 right-6 bg-white border border-pink-200 rounded-lg shadow-xl w-56 z-30 fade-in">
+    <button id="toggleAgendarBtn" class="w-full px-4 py-3 text-left text-gray-700 hover:bg-pink-50 hover:text-pink-700 transition-colors rounded-t-lg flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Agendar Hora
+    </button>
+    <button id="toggleHorasProgramadas" class="w-full px-4 py-3 text-left text-gray-700 hover:bg-pink-50 hover:text-pink-700 transition-colors flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+      </svg>
+      Horas Programadas
+    </button>
+    <button id="toggleHistorialBtn" class="w-full px-4 py-3 text-left text-gray-700 hover:bg-pink-50 hover:text-pink-700 transition-colors flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      Historial de la Mascota
+    </button>
+    <button id="toggleCalendarioBtn" class="w-full px-4 py-3 text-left text-gray-700 hover:bg-pink-50 hover:text-pink-700 transition-colors rounded-b-lg flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      Calendario
+    </button>
+  </nav>
+
+  <main class="w-full max-w-5xl flex flex-col gap-8">
+
+    <section id="horasProgramadasSection" class="hidden bg-white p-6 rounded-lg shadow-lg fade-in">
+      <h2 class="text-xl md:text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <svg class="w-6 h-6 text-pink-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        Horas Programadas
+      </h2>
+
+      <div class="mb-4">
+        <label for="calendarioFecha" class="block text-sm font-medium text-gray-700 mb-2">Filtrar por fecha:</label>
+        <input type="date" id="calendarioFecha" class="border border-gray-300 rounded-lg p-3 w-full md:w-auto focus:ring-2 focus:ring-pink-500 focus:border-transparent"/>
+      </div>
+
+      <div class="overflow-x-auto calendar-scroll">
+        <table class="min-w-full text-sm bg-gray-50 rounded-lg overflow-hidden shadow-sm" id="tablaHoras">
+          <thead class="bg-gradient-to-r from-pink-100 to-pink-200">
+            <tr>
+              <th class="border px-4 py-3 text-left font-semibold text-gray-700">Cliente</th>
+              <th class="border px-4 py-3 text-left font-semibold text-gray-700">Mascota</th>
+              <th class="border px-4 py-3 text-left font-semibold text-gray-700">Teléfono</th>
+              <th class="border px-4 py-3 text-left font-semibold text-gray-700">Fecha</th>
+              <th class="border px-4 py-3 text-left font-semibold text-gray-700">Hora</th>
+              <th class="border px-4 py-3 text-left font-semibold text-gray-700">Servicio</th>
+              <th class="border px-4 py-3 text-left font-semibold text-gray-700">Observaciones</th>
+              <th class="border px-4 py-3 text-center font-semibold text-gray-700">Estado</th>
+              <th class="border px-4 py-3 text-center font-semibold text-gray-700">WhatsApp</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200"></tbody>
+        </table>
+      </div>
+
+      <p id="noCitasMsg" class="hidden text-center text-gray-500 mt-6 text-lg">
+        No hay citas programadas para esta fecha.
+      </p>
     </section>
 
-    <section>
-      <h2>Galería de nuestras mascotas</h2>
-      <div class="gallery">
-        <img src="imagenes/perrito1.jpg" alt="Perrito feliz" />
-        <img src="imagenes/perrito2.jpg" alt="Peluquería" />
-        <img src="imagenes/perrito3.jpg" alt="Spa" />
+    <section id="historialSection" class="hidden bg-white p-6 rounded-lg shadow-lg fade-in">
+      <h2 class="text-xl md:text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+        <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        Historial de la Mascota
+      </h2>
+<div class="mb-6">
+  <input
+    id="buscadorHistorial"
+    type="text"
+    placeholder="Buscar por mascota o cliente..."
+    class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+  />
+</div>
+
+      <div id="historialContent" class="space-y-4">
+        <p class="text-center text-gray-500">Cargando historiales...</p>
       </div>
     </section>
 
-    <a href="https://wa.me/56956107671?text=Hola,%20quiero%20reservar%20una%20hora%20para%20mi%20mascota" class="btn-whatsapp" target="_blank">
-      🐶 Quiero reservar mi hora
-    </a>
+    <section id="calendarioSection" class="hidden bg-white p-6 rounded-lg shadow-lg fade-in">
+      <h2 class="text-xl md:text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+        <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        Calendario de Citas
+      </h2>
 
-    <section class="reviews-section">
-      <h2>Clientes felices</h2>
-      <form id="reviewForm">
-        <textarea id="reviewText" placeholder="Escribe tu comentario aquí..." required></textarea>
-        <button type="submit">Enviar reseña</button>
-      </form>
-      <div id="reviewsList"></div>
+      <div id="vistaCalendario">
+        <div class="flex justify-between items-center mb-6">
+          <button id="mesAnterior" class="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition-colors">
+            ← Anterior
+          </button>
+          <h3 id="mesActual" class="text-xl font-bold text-gray-800"></h3>
+          <button id="mesSiguiente" class="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition-colors">
+            Siguiente →
+          </button>
+        </div>
+
+        <div class="mb-4 flex gap-4 text-sm">
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 bg-green-500 rounded"></div>
+            <span>Disponible</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+            <span>Parcial (1-2 horas)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-4 h-4 bg-red-500 rounded"></div>
+            <span>Completo (3 horas)</span>
+          </div>
+        </div>
+
+        <div id="calendarioGrid" class="grid grid-cols-7 gap-2 mb-6"></div>
+      </div>
+
+      <div id="vistaHorasDelDia" class="hidden">
+        <button id="volverCalendario" class="mb-6 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Volver al calendario
+        </button>
+        
+        <h3 class="text-2xl font-bold text-gray-800 mb-6">Horas disponibles para el <span id="fechaSeleccionada" class="text-pink-600"></span></h3>
+        <div id="listaHoras" class="space-y-4"></div>
+      </div>
     </section>
 
-    <div class="social-links">
-      <a href="https://www.instagram.com/_peluditos_spa" class="instagram" target="_blank">Instagram</a>
-      <a href="https://www.facebook.com/peludistoss" class="facebook" target="_blank">Facebook</a>
+    <div id="agendarModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-40 fade-in">
+      <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl md:text-2xl font-semibold text-gray-800 flex items-center">
+            <svg class="w-6 h-6 text-pink-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Agregar Cita
+          </h2>
+          <button id="closeModal" class="text-gray-400 hover:text-gray-600" aria-label="Cerrar modal">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <form id="agendaForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="cliente" class="block text-sm font-medium text-gray-700 mb-2">Cliente</label>
+            <input id="cliente" placeholder="Nombre del cliente" class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent" required/>
+          </div>
+          <div>
+            <label for="mascota" class="block text-sm font-medium text-gray-700 mb-2">Mascota</label>
+            <input id="mascota" placeholder="Nombre de la mascota" class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent" required/>
+          </div>
+          <div>
+            <label for="telefono" class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
+            <input id="telefono" type="tel" placeholder="+56 9 1234 5678" class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent" required/>
+          </div>
+          <div id="direccionContainer" class="hidden">
+            <label for="direccion" class="block text-sm font-medium text-gray-700 mb-2">
+              Dirección <span class="text-xs text-gray-500">(solo primera vez)</span>
+            </label>
+            <input id="direccion" placeholder="Ej: Av. Siempre Viva 742" class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent"/>
+          </div>
+          <div>
+            <label for="fecha" class="block text-sm font-medium text-gray-700 mb-2">Fecha</label>
+            <input type="date" id="fecha" class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent" required/>
+          </div>
+          <div>
+            <label for="horaSelect" class="block text-sm font-medium text-gray-700 mb-2">Hora</label>
+            <select id="horaSelect" class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent" required>
+              <option value="">Seleccionar hora</option>
+              <option value="11:00">11:00</option>
+              <option value="15:00">15:00</option>
+              <option value="18:00">18:00</option>
+              <option value="especial">Hora especial</option>
+            </select>
+          </div>
+          <div id="horaManualContainer" class="hidden">
+            <label for="horaManual" class="block text-sm font-medium text-gray-700 mb-2">Hora manual</label>
+            <input type="time" id="horaManual" class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent"/>
+          </div>
+          <div class="md:col-span-2">
+            <label for="servicio" class="block text-sm font-medium text-gray-700 mb-2">Servicio</label>
+            <input id="servicio" placeholder="Tipo de servicio" class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent" required/>
+          </div>
+          <div class="md:col-span-2">
+            <label for="observaciones" class="block text-sm font-medium text-gray-700 mb-2">Observaciones</label>
+            <textarea id="observaciones" placeholder="Notas adicionales" class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent" rows="3"></textarea>
+          </div>
+          <div class="md:col-span-2 flex justify-end">
+            <button type="submit" class="btn-primary text-white py-3 px-6 rounded-lg font-semibold shadow-md">
+              Guardar Cita
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+
+    <div id="observacionesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 fade-in">
+      <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-lg mx-4">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+            <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Observaciones del Peluquero
+          </h2>
+          <button id="closeObservacionesModal" class="text-gray-400 hover:text-gray-600" aria-label="Cerrar modal">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="mb-4 p-4 bg-pink-50 rounded-lg">
+          <p class="text-sm text-gray-700"><strong>Mascota:</strong> <span id="obsNombreMascota"></span></p>
+          <p class="text-sm text-gray-700"><strong>Cliente:</strong> <span id="obsNombreCliente"></span></p>
+          <p class="text-sm text-gray-700"><strong>Servicio:</strong> <span id="obsServicio"></span></p>
+        </div>
+
+        <form id="observacionesForm">
+          <div class="mb-4">
+            <label for="observacionesPeluquero" class="block text-sm font-medium text-gray-700 mb-2">Observaciones del servicio:</label>
+            <textarea id="observacionesPeluquero" placeholder="Comportamiento, condición del pelaje, recomendaciones, etc." class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent" rows="6" required></textarea>
+          </div>
+          <div class="flex justify-end gap-3">
+            <button type="button" id="cancelarObservaciones" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary text-white py-2 px-6 rounded-lg font-semibold shadow-md">
+              Guardar Observaciones
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="historialEmergenteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 fade-in">
+      <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+            <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Historial Clínico Existente
+          </h2>
+          <button id="closeHistorialEmergente" class="text-gray-400 hover:text-gray-600" aria-label="Cerrar modal">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+          <p class="text-sm text-yellow-800">
+            <strong>Atención:</strong> Esta mascota ya tiene historial clínico registrado. Puedes revisar las visitas anteriores antes de continuar con la nueva cita.
+          </p>
+        </div>
+
+        <div id="historialEmergenteContent"></div>
+
+        <div class="flex justify-end gap-3 mt-6">
+          <button id="continuarAgendado" class="btn-primary text-white py-2 px-6 rounded-lg font-semibold shadow-md">
+            Continuar con nueva cita
+          </button>
+        </div>
+      </div>
+    </div>
+<!-- MODAL ESTADO MASCOTA -->
+<div id="modalEstadoMascota" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+  <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+    
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold text-pink-600">
+        Mascota: <span id="modalNombreMascota"></span>
+      </h3>
+<div class="flex justify-center mb-4">
+  <img
+    id="modalFotoMascota"
+    src=""
+    alt="Foto mascota"
+    class="w-32 h-32 rounded-full object-cover border-4 border-pink-200 shadow-md hidden"
+  />
+</div>
+      <button onclick="cerrarEstadoMascota()" class="text-gray-400 hover:text-gray-600 text-xl">
+        ✕
+      </button>
+    </div>
+
+    <button
+  id="btnEstadoGrande"
+  class="w-full py-6 text-2xl font-bold rounded-xl transition-all"
+  onclick="accionEstadoGrande()">
+</button>
+
+    <button onclick="cerrarEstadoMascota()" class="w-full bg-gray-200 hover:bg-gray-300 py-2 rounded-lg">
+      Cerrar
+    </button>
+
+  </div>
+</div>
   </main>
 
-  <footer>© 2025 peluditos_spa - Todos los derechos reservados</footer>
+  <footer class="w-full max-w-4xl text-center text-gray-500 mt-12 py-4">
+    <p>2026 Peluditos Spa. Todos los derechos reservados.</p>
+  </footer>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <script>
+    const apiURL = 'https://sheetdb.io/api/v1/ax90cxjeqm0v4';
+    const tabla = document.querySelector('#tablaHoras tbody');
+    const agendaForm = document.getElementById('agendaForm');
+    const horaSelect = document.getElementById('horaSelect');
+    const horaManual = document.getElementById('horaManual');
+    const horaManualContainer = document.getElementById('horaManualContainer');
+    const filtroFecha = document.getElementById('calendarioFecha');
+    const horasProgramadasSection = document.getElementById('horasProgramadasSection');
+    const agendarModal = document.getElementById('agendarModal');
+    const closeModal = document.getElementById('closeModal');
+    const noCitasMsg = document.getElementById('noCitasMsg');
+    const menuToggle = document.getElementById('menuToggle');
+    const menuDropdown = document.getElementById('menuDropdown');
+    const toggleAgendarBtn = document.getElementById('toggleAgendarBtn');
+    const toggleHorasProgramadasBtn = document.getElementById('toggleHorasProgramadas');
+    const toggleHistorialBtn = document.getElementById('toggleHistorialBtn');
+    const historialSection = document.getElementById('historialSection');
+    const historialContent = document.getElementById('historialContent');
+    const observacionesModal = document.getElementById('observacionesModal');
+    const closeObservacionesModal = document.getElementById('closeObservacionesModal');
+    const observacionesForm = document.getElementById('observacionesForm');
+    const cancelarObservaciones = document.getElementById('cancelarObservaciones');
+    const historialEmergenteModal = document.getElementById('historialEmergenteModal');
+    const closeHistorialEmergente = document.getElementById('closeHistorialEmergente');
+    const continuarAgendado = document.getElementById('continuarAgendado');
+    const historialEmergenteContent = document.getElementById('historialEmergenteContent');
+    const inputCliente = document.getElementById('cliente');
+    const inputMascota = document.getElementById('mascota');
+    const inputTelefono = document.getElementById('telefono');
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyB1HpFpm_uDc5lgm7GGpEQ0pMqr1wEB94Q",
-      authDomain: "peluditosspa-297be.firebaseapp.com",
-      projectId: "peluditosspa-297be",
-      storageBucket: "peluditosspa-297be.appspot.com",
-      messagingSenderId: "251173806814",
-      appId: "1:251173806814:web:572be1bc47fd81f88dd84f",
-      measurementId: "G-KY6LRRGB0H"
+    let citas = [];
+    let citaSeleccionadaEstado = null;
+    let citaActualObservacion = null;
+    let ultimoID = 64;
+    let mesActualCalendario = new Date();
+    let diaSeleccionado = null;
+    let tiempoEsperaVerificacion = null;
+
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menuDropdown.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!menuDropdown.contains(e.target) && !menuToggle.contains(e.target)) {
+        menuDropdown.classList.add('hidden');
+      }
+    });
+
+    const toggleCalendarioBtn = document.getElementById('toggleCalendarioBtn');
+    const calendarioSection = document.getElementById('calendarioSection');
+    const mesAnteriorBtn = document.getElementById('mesAnterior');
+    const mesSiguienteBtn = document.getElementById('mesSiguiente');
+    const volverCalendarioBtn = document.getElementById('volverCalendario');
+
+    toggleAgendarBtn.onclick = () => {
+      agendarModal.classList.remove('hidden');
+      menuDropdown.classList.add('hidden');
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    toggleHorasProgramadasBtn.onclick = () => {
+      horasProgramadasSection.classList.remove('hidden');
+      historialSection.classList.add('hidden');
+      calendarioSection.classList.add('hidden');
+      agendarModal.classList.add('hidden');
+      menuDropdown.classList.add('hidden');
+    };
 
-    const form = document.getElementById("reviewForm");
-    const reviewsList = document.getElementById("reviewsList");
+    toggleHistorialBtn.onclick = () => {
+      historialSection.classList.remove('hidden');
+      horasProgramadasSection.classList.add('hidden');
+      calendarioSection.classList.add('hidden');
+      agendarModal.classList.add('hidden');
+      menuDropdown.classList.add('hidden');
+      cargarHistoriales();
+    };
 
-    async function cargarReseñas() {
-      const querySnapshot = await getDocs(collection(db, "reseñas"));
-      querySnapshot.forEach((doc) => {
-        const div = document.createElement("div");
-        div.className = "review-item";
-        div.textContent = doc.data().texto;
-        reviewsList.prepend(div);
+    toggleCalendarioBtn.onclick = () => {
+      calendarioSection.classList.remove('hidden');
+      horasProgramadasSection.classList.add('hidden');
+      historialSection.classList.add('hidden');
+      agendarModal.classList.add('hidden');
+      menuDropdown.classList.add('hidden');
+      renderCalendario();
+    };
+
+    closeModal.onclick = () => {
+      agendarModal.classList.add('hidden');
+      agendaForm.reset();
+      horaManualContainer.classList.add('hidden');
+    };
+
+    horaSelect.addEventListener('change', () => {
+      if (horaSelect.value === 'especial') {
+        horaManualContainer.classList.remove('hidden');
+        horaManual.required = true;
+      } else {
+        horaManualContainer.classList.add('hidden');
+        horaManual.required = false;
+      }
+    });
+
+    function normalizarFecha(fecha) {
+      if (!fecha) return '';
+      const fechaLimpia = fecha.toString().trim();
+      
+      if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(fechaLimpia)) {
+        const parts = fechaLimpia.split('-');
+        return parts[0] + '-' + parts[1].padStart(2, '0') + '-' + parts[2].padStart(2, '0');
+      }
+      
+      if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(fechaLimpia)) {
+        const parts = fechaLimpia.split('/');
+        return parts[2] + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
+      }
+      
+      if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(fechaLimpia)) {
+        const parts = fechaLimpia.split('-');
+        return parts[2] + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
+      }
+      
+      if (/^\d{4}\/\d{1,2}\/\d{1,2}$/.test(fechaLimpia)) {
+        const parts = fechaLimpia.split('/');
+        return parts[0] + '-' + parts[1].padStart(2, '0') + '-' + parts[2].padStart(2, '0');
+      }
+      
+      try {
+        const d = new Date(fechaLimpia);
+        if (!isNaN(d.getTime())) {
+          const año = d.getFullYear();
+          const mes = String(d.getMonth() + 1).padStart(2, '0');
+          const dia = String(d.getDate()).padStart(2, '0');
+          return año + '-' + mes + '-' + dia;
+        }
+      } catch (error) {}
+      
+      return fechaLimpia;
+    }
+
+    function formatearDuracion(segundos) {
+      if (!segundos || isNaN(segundos)) return '—';
+      const h = Math.floor(segundos / 3600);
+      const m = Math.floor((segundos % 3600) / 60);
+      const s = segundos % 60;
+      return h + 'h ' + m + 'm ' + s + 's';
+    }
+
+    function normalizarTexto(texto) {
+      return texto
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function normalizarTelefono(tel) {
+      if (!tel || tel === 'undefined') return '';
+      let t = String(tel).replace(/\D/g, '');
+      if (t.length === 8) t = '569' + t;
+      if (t.length === 9) t = '56' + t;
+      return t || '';
+    }
+
+    function obtenerHistorialMascota(cliente, mascota) {
+      const clienteKey = normalizarTexto(cliente);
+      const mascotaKey = normalizarTexto(mascota);
+      return citas.filter(c =>
+        normalizarTexto(c.cliente) === clienteKey &&
+        normalizarTexto(c.mascota) === mascotaKey
+      );
+    }
+
+    fetch(apiURL).then(r => r.json()).then(d => {
+      citas = d;
+      
+      if (citas.length > 0) {
+        const maxID = Math.max(...citas.map(c => parseInt(c.id) || 0));
+        ultimoID = maxID;
+      }
+      
+      citas.forEach(c => {
+        c.telefono = normalizarTelefono(c.telefono);
+        
+        if (!c.telefono || c.telefono === 'undefined') {
+          const referencia = citas.find(x =>
+            x.cliente === c.cliente &&
+            x.mascota === c.mascota &&
+            x.telefono && x.telefono !== 'undefined'
+          );
+          if (referencia) {
+            c.telefono = referencia.telefono;
+          }
+        }
+        if (!c.direccion || c.direccion === 'undefined') {
+          const referenciaDireccion = citas.find(x =>
+            x.cliente === c.cliente &&
+            x.mascota === c.mascota &&
+            x.direccion && x.direccion !== 'undefined'
+          );
+          if (referenciaDireccion) {
+            c.direccion = referenciaDireccion.direccion;
+          }
+        }
+      });
+      
+      const hoy = new Date().toISOString().slice(0, 10);
+      filtroFecha.value = hoy;
+      document.getElementById('fecha').value = hoy;
+      renderCitas(hoy);
+      renderCalendario();
+    }).catch(err => {
+      console.error('Error al cargar citas:', err);
+      noCitasMsg.classList.remove('hidden');
+      noCitasMsg.textContent = 'Error al cargar las citas. Por favor, intente más tarde.';
+    });
+
+    filtroFecha.addEventListener('change', () => {
+      renderCitas(filtroFecha.value);
+    });
+
+    function getEstadoBadge(estado) {
+      const estadoLower = (estado || 'pendiente').toLowerCase();
+      const estadosConfig = {
+        'pendiente': { class: 'badge-pendiente', icon: '⏰', text: 'Pendiente' },
+        'en-proceso': { class: 'badge-en-proceso', icon: '🔄', text: 'En Proceso' },
+        'realizado': { class: 'badge-realizado', icon: '✅', text: 'Realizado' },
+        'cancelado': { class: 'badge-cancelado', icon: '❌', text: 'Cancelado' }
+      };
+      const config = estadosConfig[estadoLower] || estadosConfig['pendiente'];
+      return { class: config.class, text: config.icon + ' ' + config.text };
+    }
+
+    function cambiarEstado(fecha, hora) {
+      const c = citas.find(x => x.fecha === fecha && x.hora === hora);
+      if (!c) {
+        console.warn('No se encontró cita para fecha:', fecha, 'hora:', hora);
+        return Promise.resolve();
+      }
+      
+      const estadoActual = (c.estado || 'pendiente').toLowerCase();
+      console.log('Cambiar estado de:', estadoActual, 'para cita ID:', c.id);
+      
+      if (estadoActual === 'pendiente') {
+        const confirmar = confirm('¿Desea iniciar el servicio (En Proceso)?');
+        if (!confirmar) return Promise.resolve();
+        
+        const inicio = new Date().toISOString();
+        
+        return fetch(apiURL + '/id/' + c.id, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            data: { 
+              estado: 'en-proceso',
+              hora_inicio: inicio
+            } 
+          })
+        })
+          .then(() => {
+            c.estado = 'en-proceso';
+            c.hora_inicio = inicio;
+            renderCitas(filtroFecha.value);
+            alert('Servicio iniciado a las ' + new Date(inicio).toLocaleTimeString('es-CL'));
+          })
+          .catch(err => {
+            console.error('Error al actualizar estado:', err);
+            alert('Error al actualizar el estado');
+          });
+          
+      } else if (estadoActual === 'en-proceso') {
+        const opcion = prompt('Seleccione una opción:\n1. Completado\n2. Cancelado\n\nEscriba el número (1 o 2):');
+        
+        if (opcion === '1') {
+          citaActualObservacion = c;
+          document.getElementById('obsNombreMascota').textContent = c.mascota;
+          document.getElementById('obsNombreCliente').textContent = c.cliente;
+          document.getElementById('obsServicio').textContent = c.servicio;
+          document.getElementById('observacionesPeluquero').value = '';
+          observacionesModal.classList.remove('hidden');
+          return Promise.resolve();
+          
+        } else if (opcion === '2') {
+          const motivo = prompt('¿Cuál es el motivo de cancelación?');
+          if (!motivo) return Promise.resolve();
+          
+          const fin = new Date();
+          const inicio = new Date(c.hora_inicio || fin);
+          const duracionSegundos = Math.floor((fin - inicio) / 1000);
+          
+          return fetch(apiURL + '/id/' + c.id, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              data: { 
+                estado: 'cancelado',
+                hora_fin: fin.toISOString(),
+                duracion_segundos: duracionSegundos,
+                motivo_cancelacion: motivo
+              } 
+            })
+          })
+            .then(() => {
+              c.estado = 'cancelado';
+              c.hora_fin = fin.toISOString();
+              c.duracion_segundos = duracionSegundos;
+              c.motivo_cancelacion = motivo;
+              renderCitas(filtroFecha.value);
+              alert('Cita cancelada. Motivo: ' + motivo);
+            })
+            .catch(err => {
+              console.error('Error al actualizar estado:', err);
+              alert('Error al actualizar el estado');
+            });
+        }
+        return Promise.resolve();
+        
+      } else if (estadoActual === 'realizado' || estadoActual === 'cancelado') {
+        const confirmar = confirm('¿Desea volver a cambiar el estado a Pendiente?');
+        if (!confirmar) return Promise.resolve();
+        
+        return fetch(apiURL + '/id/' + c.id, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            data: { 
+              estado: 'pendiente',
+              hora_inicio: '',
+              hora_fin: '',
+              motivo_cancelacion: ''
+            } 
+          })
+        })
+          .then(() => {
+            c.estado = 'pendiente';
+            c.hora_inicio = '';
+            c.hora_fin = '';
+            c.motivo_cancelacion = '';
+            renderCitas(filtroFecha.value);
+          })
+          .catch(err => {
+            console.error('Error al actualizar estado:', err);
+            alert('Error al actualizar el estado');
+          });
+      }
+      return Promise.resolve();
+    }
+
+    function renderCitas(fecha) {
+      tabla.innerHTML = '';
+      const fechaNormalizada = normalizarFecha(fecha);
+      const delDia = citas.filter(c => normalizarFecha(c.fecha) === fechaNormalizada);
+      
+      if (!delDia.length) {
+        noCitasMsg.classList.remove('hidden');
+        return;
+      }
+      noCitasMsg.classList.add('hidden');
+
+      delDia.forEach(c => {
+        const msg = encodeURIComponent(
+          '✅ Gracias por reservar una hora en Peluditos_Spa 🐾\n\n📌 Datos de su atención:\n👤 Cliente: ' + c.cliente + '\n🐶 Mascota: ' + c.mascota + '\n📞 Teléfono: ' + c.telefono + '\n🧼 Servicio: ' + c.servicio + '\n🗓️ Fecha y hora: ' + c.fecha + ' ' + c.hora + '\n📝 Observaciones: ' + (c.obs || 'Sin observaciones') + '\n\n📍 Recuerda llegar 5 minutos antes de tu cita 💕\n📞 Le hablaremos un día antes para recordarle su hora'
+        );
+        const badge = getEstadoBadge(c.estado);
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-gray-100 transition-colors';
+        tr.innerHTML = '<td class="border px-4 py-3">' + c.cliente + '<td class="border px-4 py-3 font-semibold text-pink-600 cursor-pointer hover:underline" onclick="abrirEstadoMascota(' + c.id + ')">' + c.mascota + '</td><td class="border px-4 py-3">' + c.telefono + '</td><td class="border px-4 py-3">' + c.fecha + '</td><td class="border px-4 py-3">' + c.hora + '</td><td class="border px-4 py-3">' + c.servicio + '</td><td class="border px-4 py-3">' + (c.obs || '') + '</td><td class="border px-4 py-3 text-center"><span class="badge ' + badge.class + '" onclick="cambiarEstado(\'' + c.fecha + '\',\'' + c.hora + '\')" title="Click para cambiar estado">' + badge.text + '</span></td><td class="border px-4 py-3 text-center"><a target="_blank" href="https://wa.me/' + c.telefono + '?text=' + msg + '" class="text-green-500 hover:text-green-700 transition-colors text-xl">📱</a></td>';
+        tabla.appendChild(tr);
       });
     }
 
-    cargarReseñas();
-
-    form.addEventListener("submit", async (e) => {
+    agendaForm.addEventListener('submit', e => {
       e.preventDefault();
-      const texto = document.getElementById("reviewText").value.trim();
-      if (texto) {
-        await addDoc(collection(db, "reseñas"), { texto });
-        const div = document.createElement("div");
-        div.className = "review-item";
-        div.textContent = texto;
-        reviewsList.prepend(div);
-        form.reset();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Guardando...';
+
+      const horaFinal = horaSelect.value === 'especial' ? horaManual.value : horaSelect.value;
+      
+      const telefonoFinal = normalizarTelefono(inputTelefono.value);
+      if (!telefonoFinal) {
+        alert('Debe ingresar un teléfono válido');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Guardar Cita';
+        return;
       }
+
+      const fechaNormalizadaActual = normalizarFecha(agendaForm.fecha.value);
+      const horaYaOcupada = citas.some(c => 
+        normalizarFecha(c.fecha) === fechaNormalizadaActual && c.hora === horaFinal
+      );
+
+      if (horaYaOcupada) {
+        alert('Esta hora ya está ocupada. Por favor, selecciona otra hora.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Guardar Cita';
+        return;
+      }
+
+      const historialPrevio = obtenerHistorialMascota(
+        agendaForm.cliente.value,
+        agendaForm.mascota.value
+      );
+
+      const esPrimeraVez = historialPrevio.length === 0;
+      const direccionFinal = esPrimeraVez 
+        ? direccionInput.value.trim() 
+        : (historialPrevio[0].direccion || '');
+      
+      ultimoID++;
+      
+      const nuevaCita = {
+        id: ultimoID,
+        cliente: agendaForm.cliente.value.trim(),
+        mascota: agendaForm.mascota.value.trim(),
+        telefono: normalizarTelefono(telefonoFinal),
+        direccion: direccionFinal,
+        fecha: agendaForm.fecha.value,
+        hora: horaFinal,
+        servicio: agendaForm.servicio.value,
+        obs: agendaForm.observaciones.value,
+        estado: 'pendiente',
+        foto_mascota: ''
+      };
+
+      fetch(apiURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: [nuevaCita] })
+      })
+        .then(r => r.json())
+        .then(() => {
+          citas.push(nuevaCita);
+          renderCitas(filtroFecha.value);
+          agendarModal.classList.add('hidden');
+          agendaForm.reset();
+          horaManualContainer.classList.add('hidden');
+          alert('Cita guardada exitosamente');
+        })
+        .catch(err => {
+          console.error('Error al guardar:', err);
+          alert('Error al guardar la cita');
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Guardar Cita';
+        });
     });
+
+    closeObservacionesModal.onclick = () => {
+      observacionesModal.classList.add('hidden');
+      citaActualObservacion = null;
+    };
+
+    cancelarObservaciones.onclick = () => {
+      observacionesModal.classList.add('hidden');
+      citaActualObservacion = null;
+    };
+
+    closeHistorialEmergente.onclick = () => {
+      historialEmergenteModal.classList.add('hidden');
+    };
+
+    continuarAgendado.onclick = () => {
+      historialEmergenteModal.classList.add('hidden');
+    };
+
+    const direccionContainer = document.getElementById('direccionContainer');
+    const direccionInput = document.getElementById('direccion');
+
+    function verificarYActualizarCampos() {
+      const cliente = inputCliente.value.trim();
+      const mascota = inputMascota.value.trim();
+
+      if (!cliente || !mascota) {
+        direccionContainer.classList.add('hidden');
+        direccionInput.required = false;
+        return;
+      }
+
+      const historial = obtenerHistorialMascota(cliente, mascota);
+
+      if (historial.length === 0) {
+        direccionContainer.classList.remove('hidden');
+        direccionInput.required = true;
+      } else {
+        direccionContainer.classList.add('hidden');
+        direccionInput.required = false;
+        
+        const citaConTelefono = historial.find(c => c.telefono && c.telefono !== 'undefined');
+        if (citaConTelefono && !inputTelefono.value) {
+          inputTelefono.value = normalizarTelefono(citaConTelefono.telefono);
+        }
+      }
+    }
+
+    inputMascota.addEventListener('input', () => {
+      clearTimeout(tiempoEsperaVerificacion);
+      tiempoEsperaVerificacion = setTimeout(() => {
+        verificarHistorialMascota();
+        verificarYActualizarCampos();
+      }, 800);
+    });
+
+    inputCliente.addEventListener('input', () => {
+      clearTimeout(tiempoEsperaVerificacion);
+      tiempoEsperaVerificacion = setTimeout(() => {
+        verificarHistorialMascota();
+        verificarYActualizarCampos();
+      }, 800);
+    });
+
+    inputMascota.addEventListener('blur', verificarYActualizarCampos);
+    inputCliente.addEventListener('blur', verificarYActualizarCampos);
+
+    observacionesForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!citaActualObservacion) return;
+      
+      const observacionesPeluquero = document.getElementById('observacionesPeluquero').value;
+      const fin = new Date();
+      const inicio = new Date(citaActualObservacion.hora_inicio);
+      const duracionSegundos = Math.floor((fin - inicio) / 1000);
+      
+      fetch(apiURL + '/id/' + citaActualObservacion.id, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          data: { 
+            estado: 'realizado',
+            obs_peluquero: observacionesPeluquero,
+            fecha_realizado: new Date().toISOString(),
+            hora_fin: fin.toISOString(),
+            duracion_segundos: duracionSegundos
+          } 
+        })
+      })
+        .then(() => {
+          citaActualObservacion.estado = 'realizado';
+          citaActualObservacion.obs_peluquero = observacionesPeluquero;
+          citaActualObservacion.fecha_realizado = new Date().toISOString();
+          citaActualObservacion.hora_fin = fin.toISOString();
+          citaActualObservacion.duracion_segundos = duracionSegundos;
+          observacionesModal.classList.add('hidden');
+          
+          const horas = Math.floor(duracionSegundos / 3600);
+          const minutos = Math.floor((duracionSegundos % 3600) / 60);
+          const segundos = duracionSegundos % 60;
+          const duracionTexto = horas + 'h ' + minutos + 'm ' + segundos + 's';
+          
+          citaActualObservacion = null;
+          renderCitas(filtroFecha.value);
+          alert('Servicio completado. Duración: ' + duracionTexto);
+        })
+        .catch(err => {
+          console.error('Error al guardar observaciones:', err);
+          alert('Error al guardar las observaciones');
+        });
+    });
+
+    function cargarHistoriales() {
+      if (citas.length === 0) {
+        historialContent.innerHTML = '<p class="text-center text-gray-500">No hay mascotas registradas aún</p>';
+        return;
+      }
+
+      var mascotasMap = {};
+      
+      for (var i = 0; i < citas.length; i++) {
+        var cita = citas[i];
+        var nombreMascota = cita.mascota;
+        
+        if (!mascotasMap[nombreMascota]) {
+          mascotasMap[nombreMascota] = {
+            mascota: nombreMascota,
+            cliente: cita.cliente,
+            telefono: cita.telefono,
+            visitas: 0,
+            observaciones: [],
+            foto_mascota: cita.foto_mascota || ''
+          };
+        }
+        
+        mascotasMap[nombreMascota].visitas++;
+        
+        if (cita.obs_peluquero) {
+          mascotasMap[nombreMascota].observaciones.push({
+            fecha: cita.fecha,
+            hora: cita.hora,
+            servicio: cita.servicio,
+            obs: cita.obs_peluquero
+          });
+        }
+      }
+      
+      var html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
+      
+      var mascotas = Object.values(mascotasMap);
+      for (var j = 0; j < mascotas.length; j++) {
+        var mascota = mascotas[j];
+        
+        html += '<div class="border border-gray-200 rounded-lg p-6 bg-white shadow-sm hover:shadow-md transition-shadow cursor-pointer" onclick="verHistorialCompleto(\'' + mascota.mascota.replace(/'/g, "\\'") + '\')">';
+        html += '<div class="flex items-start gap-4 mb-4">';
+        var fotoSrc = mascota.foto_mascota || 'https://placehold.co/100x100?text=' + encodeURIComponent(mascota.mascota);
+        html += '<img src="' + fotoSrc + '" class="w-24 h-24 rounded-full object-cover border-4 border-pink-200"/>';
+        html += '<div class="flex-1">';
+        html += '<h3 class="text-xl font-bold text-pink-600 mb-1 cursor-pointer hover:text-pink-800 hover:underline transition-colors" onclick="verHistorialCompleto(\'' + mascota.mascota.replace(/'/g, "\\'") + '\')">' + mascota.mascota + '</h3>';
+        html += '<p class="text-sm text-gray-600"><strong>Dueño:</strong> ' + mascota.cliente + '</p>';
+        html += '<p class="text-sm text-gray-600"><strong>Teléfono:</strong> ' + mascota.telefono + '</p>';
+        html += '<p class="text-sm text-pink-600 font-semibold mt-2">Total de visitas: ' + mascota.visitas + '</p>';
+        html += '</div></div>';
+        
+        if (mascota.observaciones.length > 0) {
+          html += '<div class="mt-4 border-t pt-4">';
+          html += '<h4 class="font-semibold text-gray-700 mb-3">Observaciones del Peluquero:</h4>';
+          html += '<div class="space-y-3 max-h-60 overflow-y-auto">';
+          
+          for (var k = 0; k < mascota.observaciones.length; k++) {
+            var obs = mascota.observaciones[k];
+            html += '<div class="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded">';
+            html += '<p class="text-xs text-gray-500 mb-1">' + obs.fecha + ' - ' + obs.hora + ' (' + obs.servicio + ')</p>';
+            html += '<p class="text-sm text-gray-700">' + obs.obs + '</p>';
+            html += '</div>';
+          }
+          
+          html += '</div></div>';
+        } else {
+          html += '<p class="text-sm text-gray-400 italic mt-3">Sin observaciones registradas</p>';
+        }
+        
+        html += '</div>';
+      }
+      
+      html += '</div>';
+      historialContent.innerHTML = html;
+    }
+
+    async function subirFotoImgBB(file) {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const res = await fetch(
+        'https://api.imgbb.com/1/upload?key=2b7728a61dcbc4c908d2a05987693ff5',
+        {
+          method: 'POST',
+          body: formData
+        }
+      );
+
+      const data = await res.json();
+
+      if (!data.success) {
+        throw new Error('Error al subir imagen a ImgBB');
+      }
+
+      return data.data.url;
+    }
+
+    async function subirFotoMascota(nombreMascota, nombreCliente, input) {
+      if (!input.files || !input.files[0]) return;
+
+      const img = document.getElementById('foto-' + nombreMascota.replace(/\s/g, '-'));
+      if (img) img.style.opacity = '0.5';
+
+      try {
+        console.log('[v0] Paso 1: Subiendo imagen a ImgBB...');
+        const fotoURL = await subirFotoImgBB(input.files[0]);
+        console.log('[v0] URL obtenida:', fotoURL);
+
+        console.log('[v0] Paso 2: Buscando citas por cliente + mascota...');
+        const citasMascota = citas.filter(c => c.mascota === nombreMascota && c.cliente === nombreCliente);
+        console.log('[v0] Citas encontradas:', citasMascota.length);
+
+        if (citasMascota.length === 0) {
+          throw new Error('No se encontraron citas para este cliente y mascota');
+        }
+
+        citasMascota.sort((a, b) => {
+          const fa = new Date(a.fecha + ' ' + a.hora);
+          const fb = new Date(b.fecha + ' ' + b.hora);
+          return fa - fb;
+        });
+
+        const citaBase = citasMascota[0];
+        console.log('[v0] Cita base seleccionada - ID:', citaBase.id);
+
+        const endpoint = apiURL + '/id/' + encodeURIComponent(citaBase.id);
+        console.log('[v0] Paso 3: Enviando PATCH a:', endpoint);
+
+        const res = await fetch(endpoint, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            data: { foto_mascota: fotoURL }
+          })
+        });
+
+        const responseText = await res.text();
+        console.log('[v0] Respuesta de SheetDB:', responseText);
+
+        if (!res.ok) {
+          throw new Error('Error SheetDB: ' + res.status + ' - ' + responseText);
+        }
+
+        console.log('[v0] Paso 4: Actualizando citas en memoria...');
+        citas.forEach(c => {
+          if (c.mascota === nombreMascota && c.cliente === nombreCliente) {
+            c.foto_mascota = fotoURL;
+          }
+        });
+
+        if (img) {
+          img.src = fotoURL;
+          img.style.opacity = '1';
+        }
+
+        console.log('[v0] Proceso completado exitosamente');
+        alert('Foto guardada correctamente');
+      } catch (err) {
+        console.error('[v0] Error detallado:', err);
+        alert('Error: ' + err.message);
+        if (img) img.style.opacity = '1';
+      }
+    }
+
+    function verHistorialCompleto(nombreMascota) {
+      var citasMascota = [];
+      for (var i = 0; i < citas.length; i++) {
+        if (citas[i].mascota === nombreMascota) {
+          citasMascota.push(citas[i]);
+        }
+      }
+      
+      if (citasMascota.length === 0) return;
+      
+      var primeraCita = citasMascota[0];
+      
+      var html = '<button onclick="cargarHistoriales()" class="mb-6 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition-colors flex items-center gap-2">';
+      html += '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>';
+      html += 'Volver a todas las mascotas</button>';
+      
+      html += '<div class="bg-gradient-to-r from-pink-50 to-pink-100 p-6 rounded-lg shadow-md mb-6">';
+      html += '<div class="flex items-start gap-6">';
+      var fotoGrande = primeraCita.foto_mascota || 'https://placehold.co/150x150?text=' + encodeURIComponent(nombreMascota);
+      html += '<div class="relative inline-block">';
+html += '<img id="foto-historial-' + nombreMascota.replace(/\s/g, '-') + '" src="' + fotoGrande + '" alt="' + nombreMascota + '" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"/>';
+
+html += '<label for="upload-historial-' + nombreMascota.replace(/\s/g, '-') + '" class="absolute bottom-0 right-0 bg-pink-500 text-white p-2 rounded-full cursor-pointer hover:bg-pink-600 shadow-lg">';
+html += '📷';
+html += '</label>';
+
+html += '<input type="file" id="upload-historial-' + nombreMascota.replace(/\s/g, '-') + '" accept="image/*" class="hidden" onchange="subirFotoMascota(\'' + primeraCita.mascota.replace(/\'/g, "\\'") + '\', \'' + primeraCita.cliente.replace(/\'/g, "\\'") + '\', this)"/>';
+
+html += '</div>';
+      html += '<div class="flex-1">';
+      html += '<h2 class="text-3xl font-bold text-gray-800 mb-3">' + nombreMascota + '</h2>';
+      html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
+      html += '<p class="text-gray-700"><strong>Dueño:</strong> ' + primeraCita.cliente + '</p>';
+      
+      var telefonoSeguro = primeraCita.telefono && primeraCita.telefono !== 'undefined' 
+        ? primeraCita.telefono 
+        : 'No registrado';
+      html += '<p class="text-gray-700"><strong>Teléfono:</strong> ' + telefonoSeguro + '</p>';
+      
+      if (primeraCita.direccion && primeraCita.direccion !== 'undefined') {
+        html += '<p class="text-gray-700"><strong>Dirección:</strong> ' + primeraCita.direccion + '</p>';
+      }
+      
+      html += '<p class="text-pink-600 font-semibold"><strong>Total de visitas:</strong> ' + citasMascota.length + '</p>';
+      html += '</div></div></div></div>';
+      
+      html += '<h3 class="text-xl font-semibold text-gray-800 mb-4">Historial Completo de Visitas</h3>';
+      html += '<div class="space-y-4">';
+      
+      for (var i = 0; i < citasMascota.length; i++) {
+        var cita = citasMascota[i];
+        var estadoActual = (cita.estado || 'pendiente').toLowerCase();
+        var badgeClass = 'badge-pendiente';
+        var badgeText = 'Pendiente';
+        var badgeIcon = '⏰';
+        
+        if (estadoActual === 'realizado') {
+          badgeClass = 'badge-realizado';
+          badgeText = 'Realizado';
+          badgeIcon = '✅';
+        } else if (estadoActual === 'en-proceso') {
+          badgeClass = 'badge-en-proceso';
+          badgeText = 'En Proceso';
+          badgeIcon = '🔄';
+        } else if (estadoActual === 'cancelado') {
+          badgeClass = 'badge-cancelado';
+          badgeText = 'Cancelado';
+          badgeIcon = '❌';
+        }
+        
+        html += '<div class="border border-gray-200 rounded-lg p-5 bg-white shadow-sm">';
+        html += '<div class="flex justify-between items-start mb-3">';
+        html += '<div>';
+        html += '<p class="font-semibold text-gray-800 text-lg">' + cita.fecha + ' - ' + cita.hora + '</p>';
+        html += '<p class="text-sm text-gray-600 mt-1"><strong>Servicio:</strong> ' + cita.servicio + '</p>';
+        
+        if (cita.hora_inicio) {
+          const horaInicioFormato = new Date(cita.hora_inicio).toLocaleTimeString('es-CL');
+          html += '<p class="text-sm text-blue-600 mt-1"><strong>Hora Inicio:</strong> ' + horaInicioFormato + '</p>';
+        }
+        if (cita.hora_fin) {
+          const horaFinFormato = new Date(cita.hora_fin).toLocaleTimeString('es-CL');
+          html += '<p class="text-sm text-blue-600"><strong>Hora Fin:</strong> ' + horaFinFormato + '</p>';
+        }
+        if (cita.duracion_segundos) {
+          html += '<p class="text-sm text-green-600 font-semibold"><strong>Duración:</strong> ' + formatearDuracion(cita.duracion_segundos) + '</p>';
+        }
+        
+        html += '</div>';
+        html += '<span class="badge ' + badgeClass + '">' + badgeIcon + ' ' + badgeText + '</span>';
+        html += '</div>';
+        
+        if (cita.motivo_cancelacion) {
+          html += '<div class="bg-red-50 border-l-4 border-red-400 p-4 mt-3 rounded">';
+          html += '<p class="text-sm font-semibold text-red-700 mb-2">Motivo de Cancelación:</p>';
+          html += '<p class="text-sm text-red-700">' + cita.motivo_cancelacion + '</p>';
+          html += '</div>';
+        }
+        
+        if (cita.obs_peluquero) {
+          html += '<div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-3 rounded">';
+          html += '<p class="text-sm font-semibold text-gray-700 mb-2">Observaciones del Peluquero:</p>';
+          html += '<p class="text-sm text-gray-700">' + cita.obs_peluquero + '</p>';
+          html += '</div>';
+        }
+        
+        if (cita.obs) {
+          html += '<div class="bg-gray-50 p-4 mt-3 rounded">';
+          html += '<p class="text-sm text-gray-500"><strong>Notas iniciales:</strong> ' + cita.obs + '</p>';
+          html += '</div>';
+        }
+        
+        html += '</div>';
+      }
+      
+      html += '</div>';
+      historialContent.innerHTML = html;
+    }
+
+    function renderCalendario() {
+      const año = mesActualCalendario.getFullYear();
+      const mes = mesActualCalendario.getMonth();
+      
+      document.getElementById('mesActual').textContent = mesActualCalendario.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+      
+      const primerDia = new Date(año, mes, 1).getDay();
+      const ultimoDia = new Date(año, mes + 1, 0).getDate();
+      
+      const calendarioGrid = document.getElementById('calendarioGrid');
+      calendarioGrid.innerHTML = '';
+      
+      const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+      diasSemana.forEach(dia => {
+        const header = document.createElement('div');
+        header.className = 'text-center font-semibold text-gray-700 p-2';
+        header.textContent = dia;
+        calendarioGrid.appendChild(header);
+      });
+      
+      for (let i = 0; i < primerDia; i++) {
+        const vacio = document.createElement('div');
+        calendarioGrid.appendChild(vacio);
+      }
+      
+      for (let dia = 1; dia <= ultimoDia; dia++) {
+        const mesStr = String(mes + 1).padStart(2, '0');
+        const diaStr = String(dia).padStart(2, '0');
+        const fechaStr = año + '-' + mesStr + '-' + diaStr;
+        
+        const citasDelDia = citas.filter(c => normalizarFecha(c.fecha) === fechaStr);
+        const horasOcupadas = citasDelDia.length;
+        
+        let colorClass = 'bg-green-100 hover:bg-green-200 border-green-300';
+        if (horasOcupadas >= 3) {
+          colorClass = 'bg-red-100 hover:bg-red-200 border-red-300';
+        } else if (horasOcupadas >= 1) {
+          colorClass = 'bg-yellow-100 hover:bg-yellow-200 border-yellow-300';
+        }
+        
+        const celda = document.createElement('div');
+        celda.className = 'border-2 rounded-lg p-4 text-center cursor-pointer transition-all ' + colorClass;
+        celda.innerHTML = '<div class="text-lg font-semibold">' + dia + '</div><div class="text-xs mt-1">' + horasOcupadas + '/3</div>';
+        celda.onclick = () => mostrarHorasDelDia(fechaStr);
+        
+        calendarioGrid.appendChild(celda);
+      }
+    }
+
+    function mostrarHorasDelDia(fecha) {
+      diaSeleccionado = fecha;
+      document.getElementById('fechaSeleccionada').textContent = fecha;
+      
+      const horasDisponibles = ['11:00', '15:00', '18:00'];
+      const citasDelDia = citas.filter(c => normalizarFecha(c.fecha) === fecha);
+      const horasOcupadas = citasDelDia.map(c => c.hora);
+      
+      const listaHoras = document.getElementById('listaHoras');
+      listaHoras.innerHTML = '';
+      
+      horasDisponibles.forEach(hora => {
+        const estaOcupada = horasOcupadas.includes(hora);
+        const div = document.createElement('div');
+        
+        if (estaOcupada) {
+          const cita = citasDelDia.find(c => c.hora === hora);
+          div.className = 'border-2 border-red-300 bg-red-50 rounded-lg p-6 shadow-sm';
+          div.innerHTML = '<div class="flex justify-between items-center"><div><p class="text-2xl font-bold text-red-700 mb-2">' + hora + ' - OCUPADA</p><p class="text-sm text-gray-700"><strong>Cliente:</strong> ' + cita.cliente + '</p><p class="text-sm text-gray-700"><strong>Mascota:</strong> ' + cita.mascota + '</p><p class="text-sm text-gray-700"><strong>Servicio:</strong> ' + cita.servicio + '</p></div><svg class="w-12 h-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></div>';
+        } else {
+          div.className = 'border-2 border-green-300 bg-green-50 rounded-lg p-6 cursor-pointer hover:bg-green-100 hover:shadow-lg transition-all shadow-sm';
+          div.innerHTML = '<div class="flex justify-between items-center"><div><p class="text-2xl font-bold text-green-700 mb-2">' + hora + ' - DISPONIBLE</p><p class="text-sm text-gray-600">Haz clic para agendar esta hora</p></div><svg class="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>';
+          div.onclick = () => abrirFormularioDesdeCalendario(fecha, hora);
+        }
+        
+        listaHoras.appendChild(div);
+      });
+      
+      document.getElementById('vistaCalendario').classList.add('hidden');
+      document.getElementById('vistaHorasDelDia').classList.remove('hidden');
+    }
+
+    function abrirFormularioDesdeCalendario(fecha, hora) {
+      document.getElementById('fecha').value = fecha;
+      document.getElementById('horaSelect').value = hora;
+      agendarModal.classList.remove('hidden');
+      document.getElementById('horasDelDia').classList.add('hidden');
+    }
+
+    mesAnteriorBtn.onclick = () => {
+      mesActualCalendario.setMonth(mesActualCalendario.getMonth() - 1);
+      renderCalendario();
+    };
+
+    mesSiguienteBtn.onclick = () => {
+      mesActualCalendario.setMonth(mesActualCalendario.getMonth() + 1);
+      renderCalendario();
+    };
+
+    volverCalendarioBtn.onclick = () => {
+      document.getElementById('vistaHorasDelDia').classList.add('hidden');
+      document.getElementById('vistaCalendario').classList.remove('hidden');
+    };
+
+    function verificarHistorialMascota() {
+      const cliente = inputCliente.value.trim();
+      const mascota = inputMascota.value.trim();
+
+      if (!cliente || !mascota) return;
+
+      const clienteKey = normalizarTexto(cliente);
+      const mascotaKey = normalizarTexto(mascota);
+
+      const coincidencias = citas.filter(c =>
+        normalizarTexto(c.cliente) === clienteKey &&
+        normalizarTexto(c.mascota) === mascotaKey
+      );
+
+      if (coincidencias.length === 0) {
+        return;
+      }
+
+      abrirHistorialEmergente(cliente, mascota, coincidencias);
+    }
+
+    function abrirHistorialEmergente(cliente, mascota, citasMascota) {
+      citasMascota.sort((a, b) => {
+        const fa = new Date(a.fecha);
+        const fb = new Date(b.fecha);
+        return fb - fa;
+      });
+
+      const primeraCita = citasMascota[0];
+
+      let html = '<div class="bg-gradient-to-r from-pink-50 to-pink-100 p-6 rounded-lg shadow-md mb-6">';
+      html += '<div class="flex items-start gap-6">';
+      const fotoGrande = primeraCita.foto_mascota || 'https://placehold.co/150x150?text=' + encodeURIComponent(mascota);
+      html += '<img src="' + fotoGrande + '" alt="' + mascota + '" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"/>';
+      html += '<div class="flex-1">';
+      html += '<h2 class="text-3xl font-bold text-gray-800 mb-3">' + mascota + '</h2>';
+      html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
+      html += '<p class="text-gray-700"><strong>Dueño:</strong> ' + cliente + '</p>';
+      
+      const telefonoSeguroEmergente = primeraCita.telefono && primeraCita.telefono !== 'undefined' 
+        ? primeraCita.telefono 
+        : 'No registrado';
+      html += '<p class="text-gray-700"><strong>Teléfono:</strong> ' + telefonoSeguroEmergente + '</p>';
+      
+      if (primeraCita.direccion && primeraCita.direccion !== 'undefined') {
+        html += '<p class="text-gray-700"><strong>Dirección:</strong> ' + primeraCita.direccion + '</p>';
+      }
+      
+      html += '<p class="text-pink-600 font-semibold"><strong>Total de visitas:</strong> ' + citasMascota.length + '</p>';
+      html += '</div></div></div></div>';
+
+      html += '<h3 class="text-xl font-semibold text-gray-800 mb-4">Últimas 3 visitas</h3>';
+      html += '<div class="space-y-4">';
+
+      const ultimasTres = citasMascota.slice(0, 3);
+
+      for (let i = 0; i < ultimasTres.length; i++) {
+        const cita = ultimasTres[i];
+        const estadoActual = (cita.estado || 'pendiente').toLowerCase();
+        let badgeClass = 'badge-pendiente';
+        let badgeText = 'Pendiente';
+        let badgeIcon = '⏰';
+
+        if (estadoActual === 'realizado') {
+          badgeClass = 'badge-realizado';
+          badgeText = 'Realizado';
+          badgeIcon = '✅';
+        } else if (estadoActual === 'en-proceso') {
+          badgeClass = 'badge-en-proceso';
+          badgeText = 'En Proceso';
+          badgeIcon = '🔄';
+        } else if (estadoActual === 'cancelado') {
+          badgeClass = 'badge-cancelado';
+          badgeText = 'Cancelado';
+          badgeIcon = '❌';
+        }
+
+        html += '<div class="border border-gray-200 rounded-lg p-5 bg-white shadow-sm">';
+        html += '<div class="flex justify-between items-start mb-3">';
+        html += '<div>';
+        html += '<p class="font-semibold text-gray-800 text-lg">' + cita.fecha + ' - ' + cita.hora + '</p>';
+        html += '<p class="text-sm text-gray-600 mt-1"><strong>Servicio:</strong> ' + cita.servicio + '</p>';
+        html += '</div>';
+        html += '<span class="badge ' + badgeClass + '">' + badgeIcon + ' ' + badgeText + '</span>';
+        html += '</div>';
+
+        if (cita.obs_peluquero) {
+          html += '<div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-3 rounded">';
+          html += '<p class="text-sm font-semibold text-gray-700 mb-2">Observaciones:</p>';
+          html += '<p class="text-sm text-gray-700">' + cita.obs_peluquero + '</p>';
+          html += '</div>';
+        }
+
+        html += '</div>';
+      }
+
+      html += '</div>';
+
+      historialEmergenteContent.innerHTML = html;
+      historialEmergenteModal.classList.remove('hidden');
+    }
+// ===== MODAL ESTADO MASCOTA =====
+window.abrirEstadoMascota = function (id) {
+  console.log('CLICK EN MASCOTA ID:', id);
+
+  const cita = citas.find(c => Number(c.id) === Number(id));
+  if (!cita) {
+    alert('No se encontró la cita');
+    return;
+  }
+
+  // Guardamos la cita activa
+  citaSeleccionadaEstado = cita;
+
+  // Nombre
+  document.getElementById('modalNombreMascota').textContent = cita.mascota;
+
+  // FOTO (misma del historial)
+  const img = document.getElementById('modalFotoMascota');
+
+  if (cita.foto_mascota && cita.foto_mascota !== 'undefined') {
+    img.src = cita.foto_mascota;
+    img.classList.remove('hidden');
+  } else {
+    img.classList.add('hidden');
+    img.src = '';
+  }
+
+  // Botón grande
+  actualizarBotonEstadoGrande();
+
+  // Mostrar modal
+  document.getElementById('modalEstadoMascota').classList.remove('hidden');
+};
+// PASO 2: mostrar calendario al iniciar la app
+window.addEventListener('load', () => {
+  calendarioSection.classList.remove('hidden');
+  horasProgramadasSection.classList.add('hidden');
+  historialSection.classList.add('hidden');
+});
+window.cerrarEstadoMascota = function () {
+  citaSeleccionadaEstado = null;
+  document.getElementById('modalEstadoMascota').classList.add('hidden');
+};
+function actualizarBotonEstadoGrande() {
+  if (!citaSeleccionadaEstado) return;
+
+  const estado = (citaSeleccionadaEstado.estado || 'pendiente').toLowerCase();
+  const btn = document.getElementById('btnEstadoGrande');
+
+  btn.className = 'w-full py-6 text-2xl font-bold rounded-xl transition-all';
+
+  if (estado === 'pendiente') {
+    btn.textContent = '⏰ PENDIENTE\n(Iniciar servicio)';
+    btn.classList.add('bg-yellow-400', 'hover:bg-yellow-500', 'text-yellow-900');
+  }
+
+  else if (estado === 'en-proceso') {
+    btn.textContent = '🔄 EN PROCESO\n(Finalizar o cancelar)';
+    btn.classList.add('bg-blue-500', 'hover:bg-blue-600', 'text-white');
+  }
+
+  else if (estado === 'realizado') {
+    btn.textContent = '✅ REALIZADO\n(Volver a pendiente)';
+    btn.classList.add('bg-green-500', 'hover:bg-green-600', 'text-white');
+  }
+
+  else if (estado === 'cancelado') {
+    btn.textContent = '❌ CANCELADO\n(Volver a pendiente)';
+    btn.classList.add('bg-red-500', 'hover:bg-red-600', 'text-white');
+  }
+}
+window.accionEstadoGrande = function () {
+  if (!citaSeleccionadaEstado) return;
+
+  // USAMOS LA FUNCIÓN ORIGINAL y esperamos a que termine
+  const promesa = cambiarEstado(
+    citaSeleccionadaEstado.fecha,
+    citaSeleccionadaEstado.hora
+  );
+
+  // Esperamos a que la promesa se resuelva antes de actualizar
+  if (promesa && promesa.then) {
+    promesa.then(() => {
+      // Actualizamos el botón después de que el cambio se haya completado
+      actualizarBotonEstadoGrande();
+      renderCitas(filtroFecha.value);
+    }).catch(err => {
+      console.error('Error en accionEstadoGrande:', err);
+      // Actualizamos de todas formas para reflejar el estado actual
+      actualizarBotonEstadoGrande();
+    });
+  } else {
+    // Si no hay promesa (usuario canceló), actualizamos igual
+    actualizarBotonEstadoGrande();
+  }
+};
+const buscadorHistorial = document.getElementById('buscadorHistorial');
+
+if (buscadorHistorial) {
+  buscadorHistorial.addEventListener('input', () => {
+    const texto = buscadorHistorial.value.trim().toLowerCase();
+
+    if (!texto) {
+      cargarHistoriales(); // vuelve a mostrar todo
+      return;
+    }
+
+    const filtradas = citas.filter(c =>
+      (c.mascota && c.mascota.toLowerCase().includes(texto)) ||
+      (c.cliente && c.cliente.toLowerCase().includes(texto))
+    );
+
+    renderHistorialFiltrado(filtradas);
+  });
+}
+function renderHistorialFiltrado(citasFiltradas) {
+  if (!citasFiltradas.length) {
+    historialContent.innerHTML =
+      '<p class="text-center text-gray-500">No se encontraron resultados</p>';
+    return;
+  }
+
+  const mapa = {};
+
+  citasFiltradas.forEach(c => {
+    const key = normalizarTexto(c.mascota + '|' + c.cliente);
+
+    if (!mapa[key]) {
+      mapa[key] = {
+        mascota: c.mascota,
+        cliente: c.cliente,
+        telefono: c.telefono,
+        direccion: c.direccion,
+        foto_mascota: c.foto_mascota,
+        visitas: 0,
+        observaciones: []
+      };
+    }
+
+    mapa[key].visitas++;
+
+    if (c.obs_peluquero) {
+      mapa[key].observaciones.push({
+        fecha: c.fecha,
+        hora: c.hora,
+        servicio: c.servicio,
+        obs: c.obs_peluquero
+      });
+    }
+  });
+
+  let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-6">';
+
+  Object.values(mapa).forEach(m => {
+    const foto = m.foto_mascota || 'https://placehold.co/100x100?text=' + encodeURIComponent(m.mascota);
+
+    html += `
+      <div
+  class="border border-gray-200 rounded-lg p-6 bg-white shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+  onclick="verHistorialCompleto('${m.mascota.replace(/'/g, "\\'")}')">
+        <div class="flex gap-4 mb-4">
+          <img src="${foto}" class="w-20 h-20 rounded-full object-cover border-4 border-pink-200"/>
+          <div>
+            <h3
+  class="text-xl font-bold text-pink-600 cursor-pointer hover:text-pink-800 hover:underline transition-colors"
+  onclick="verHistorialCompleto('${m.mascota.replace(/'/g, "\\'")}')">
+  ${m.mascota}
+</h3>
+            <p class="text-sm text-gray-600"><strong>Dueño:</strong> ${m.cliente}</p>
+            <p class="text-sm text-gray-600"><strong>Teléfono:</strong> ${m.telefono || 'No registrado'}</p>
+            ${m.direccion ? `<p class="text-sm text-gray-600"><strong>Dirección:</strong> ${m.direccion}</p>` : ''}
+            <p class="text-sm text-pink-600 font-semibold mt-2">Visitas: ${m.visitas}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  html += '</div>';
+  historialContent.innerHTML = html;
+}
+
   </script>
+
 </body>
 </html>
